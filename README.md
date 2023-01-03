@@ -2,10 +2,10 @@
 
 The module on polybar looks like this:<br>
 *Current device connected:*
-![screenshot1](./screenshot_device_connected.png)
+![bt_connected](./screenshots/screenshot_device_connected.png)
 
 *Current device disconnected:*
-![screenshot1](./screenshot_device_disconnected.png)
+![bt_disconnected](./screenshots/screenshot_device_disconnected.png)
 
 Using **scroll** loops through paired devices.
 
@@ -13,7 +13,7 @@ Using **scroll** loops through paired devices.
 
 **Right mouse click** turns on/off bluetooth. When off the icon then becomes:
 
-![screenshot1](./screenshot_bluetooth_off.png)
+![bt_off](./screenshots/screenshot_bluetooth_off.png)
 
 
 # Installation
