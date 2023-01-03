@@ -13,11 +13,11 @@ The module on polybar looks like this:<br>
 <br/>
 
 <br/>
-Using **scroll** loops through paired devices.
+Using scroll loops through paired devices.
 <br/>
-**Left mouse click** connects or disconnects with currently displayed device. <br>
+Left mouse click connects or disconnects with currently displayed device. <br>
 <br/>
-**Right mouse click** turns on/off bluetooth. <br>
+Right mouse click turns on/off bluetooth. <br>
 
 # Installation
 Requirements:
@@ -38,4 +38,5 @@ scroll-down = ./bluetooth --decrement &<br>
 interval = 0.25 <br>
 <br/>
 
-and put the **bluetooth** script in the same directory.
+and put the bluetooth script in the same directory.
+
