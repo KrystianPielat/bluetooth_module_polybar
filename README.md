@@ -11,7 +11,7 @@ Using **scroll** loops through paired devices.
 
 **Left mouse click** connects or disconnects with currently displayed device. <br>
 
-**Right mouse click** turns on/off bluetooth. 
+**Right mouse click** turns on/off bluetooth. <br>
 *Bluetooth off icon:*
 ![bt_off](./screenshots/screenshot_bluetooth_off.png)
 
