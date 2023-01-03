@@ -1,0 +1,204 @@
+#!/bin/bash
+
+counter_file="/tmp/polybar_bluetooth_counter";
+if [ ! -f $counter_file ]; then
+    touch "$counter_file";
+fi
+
+print () {
+  if [ "$(systemctl is-active "bluetooth.service")" = "active" ] && is_powered; then
+
+        amount=$(get_paired_devices | wc -l);
+        if [ $amount -gt 0 ]; then
+            device_info=$(bluetoothctl info "$(get_current_device_address)");
+            if echo $device_info | grep -q "Connected: yes"; then
+              printf "%%{F#0957d6} %s%%{F-}\n" "$(get_current_device_name)";
+            else
+              printf "%%{F#f00} %s%%{F-}\n" "$(get_current_device_name)";
+            fi
+        else
+            echo ""
+        fi    
+    else
+        echo ""
+    fi
+}
+
+# Nie sprawdzone
+print_all() {
+    if [ "$(systemctl is-active "bluetooth.service")" = "active" ]; then
+
+        devices_paired=$(bluetoothctl paired-devices | grep Device | cut -d ' ' -f 2-)
+
+        for device in $devices_paired; do
+
+            device_info=$(bluetoothctl info "$device")
+            if echo "$device_info" | grep -q "Connected: yes"; then
+                device_alias=$(echo "$device_info" | grep "Alias" | cut -d ' ' -f 2-)
+                printf " %s\n" "$device_alias" 
+            fi
+        done
+
+    else
+        echo ""
+    fi
+}
+
+
+switch_power() {
+    if bluetoothctl show | grep -q "Powered: no"; then
+        bluetoothctl power on >> /dev/null
+        sleep 1
+    else
+      bluetoothctl power off >> /dev/null;
+      sleep 1;
+    fi
+}
+
+
+is_powered() {
+    if bluetoothctl show | grep -q "Powered: yes"; then
+      return 0;
+    else
+      return 1;
+    fi
+}
+
+
+toggle_current() {
+    if bluetoothctl show | grep -q "Powered: no"; then
+        bluetoothctl power on >> /dev/null
+        sleep 1
+    fi
+
+
+    device_info=$(bluetoothctl info "$(get_current_device_address)");
+    if echo "$device_info" | grep -q "Connected: yes"; then
+        bluetoothctl disconnect "$(get_current_device_address)" >> /dev/null
+    else
+        bluetoothctl connect "$(get_current_device_address)" >> /dev/null;
+    fi
+    
+}
+
+toggle_all() {
+    if bluetoothctl show | grep -q "Powered: no"; then
+
+        bluetoothctl power on >> /dev/null
+        sleep 1
+
+        devices_paired=$(bluetoothctl paired-devices | grep Device | cut -d ' ' -f 2)
+        echo "$devices_paired" | while read -r line; do
+            bluetoothctl connect "$line" >> /dev/null
+        done
+    else
+        devices_paired=$(bluetoothctl paired-devices | grep Device | cut -d ' ' -f 2)
+        echo "$devices_paired" | while read -r line; do
+            bluetoothctl disconnect "$line" >> /dev/null
+        done
+
+        bluetoothctl power off >> /dev/null
+    fi
+}
+
+
+get_counter() {
+    read -r counter < "$counter_file"
+    echo $counter;
+}
+
+
+increment_counter(){
+    counter=$(get_counter);
+    echo $(( $counter + 1 )) > $counter_file;
+}
+
+decrement_counter(){
+    counter=$(get_counter);
+    echo $(( $counter - 1 )) > $counter_file;
+}
+
+
+get_devices () {
+
+    devices_paired=$(bluetoothctl paired-devices | grep Device | cut -d ' ' -f 2-)
+    for device in $devices_paired; do
+      device_info=$(bluetoothctl info "$device")
+      if echo "$device_info" | grep -q "Connected: yes"; then
+        device_alias=$(echo "$device_info" | grep "Alias" | cut -d ' ' -f 2-);
+        echo $device_alias;
+      fi
+    done
+ 
+}
+
+
+get_paired_devices () {
+    bluetoothctl paired-devices | awk '{ for (i = 3; i <= NF; i++) { printf "%s ", $i } print "" }'
+}
+
+
+get_current_device_address (){
+    counter=$((`get_counter`));
+    amount=$(get_paired_devices | wc -l);
+    if [ $amount -gt 0 ]; then
+        index=$( echo $(( $counter % ($amount) + 1 )) );
+
+        device_name=$( bluetoothctl paired-devices | sed "${index}!d" | cut -d ' ' -f 2);
+        echo $device_name;
+    fi
+}
+
+
+
+get_current_device_name(){
+    counter=$((`get_counter`));
+    amount=$(get_paired_devices | wc -l);
+    if [ $amount -gt 0 ]; then
+        index=$( echo $(( $counter % ($amount) + 1 )) );
+
+        device_name=$( get_paired_devices | sed "${index}!d" );
+        echo $device_name;
+    fi
+}
+
+
+
+case "$1" in
+    --addr)
+        get_current_device_address
+        ;;
+    --name)
+        get_current_device_name
+        ;;
+    --connected)
+        get_devices 
+        ;;
+    --count)
+        get_counter 
+        ;;
+    --increment) 
+        increment_counter
+        ;;
+    --decrement)
+        decrement_counter
+        ;;
+    --paired)
+        get_paired_devices 
+        ;;
+    --toggle)
+        toggle_current
+        ;;
+    --switch)
+        switch_power
+        ;;
+    --list)
+        print_all
+        ;;
+    --powered)
+        is_powered
+        ;;
+    *)
+        print 
+        ;;
+esac
