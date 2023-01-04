@@ -41,7 +41,7 @@ scroll-down = ./bluetooth --decrement &<br>
 interval = 0.1 <br>
 <br/>
 
-and put the bluetooth script from that repository in the same directory.<br>
+2.Put the *bluetooth* script from that repository in the same directory.<br>
 
-Modify the *bluetooth_on_icon* and *bluetooth_off_icon* in the *bluetooth* script to icons of your choice.
+3.Modify the *bluetooth_on_icon* and *bluetooth_off_icon* in the *bluetooth* script to icons of your choice.
 
