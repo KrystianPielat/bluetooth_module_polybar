@@ -20,13 +20,16 @@ Left mouse click connects or disconnects with currently displayed device. <br>
 Right mouse click turns on/off bluetooth. <br>
 
 # Installation
-Requirements:
+Requirements: <br>
     - A NerdFont to display icons
 <br/>
-To install, copy the following snippet to your polybar config file(usually config.ini):<br>
+To install:
+<br/>
+1.Copy the following snippet to your polybar config file(usually config.ini):<br>
 <br/>
 
-[module/bluetooth]<br><br>
+[module/bluetooth]<br>
+<br/>
 
 type = custom/script<br>
 exec = ./bluetooth<br>
@@ -35,8 +38,10 @@ click-left = ./bluetooth --toggle &<br>
 click-right = ./bluetooth --switch &<br>
 scroll-up = ./bluetooth --increment &<br>
 scroll-down = ./bluetooth --decrement &<br>
-interval = 0.25 <br>
+interval = 0.1 <br>
 <br/>
 
-and put the bluetooth script in the same directory.
+and put the bluetooth script from that repository in the same directory.<br>
+
+Modify the *bluetooth_on_icon* and *bluetooth_off_icon* in the *bluetooth* script to icons of your choice.
 

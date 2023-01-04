@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Paste in the quotation marks icons you want to use from:
+# https://www.nerdfonts.com/cheat-sheet
+#
+# Make sure you have a nerdfont installed so that they can be displayed correctly
+
+bluetooth_on_icon="";
+bluetooth_off_icon="";
+
+
+
+
 
 counter_file="/tmp/polybar_bluetooth_counter";
 if [ ! -f $counter_file ]; then
@@ -13,15 +24,15 @@ print () {
         if [ $amount -gt 0 ]; then
             device_info=$(bluetoothctl info "$(get_current_device_address)");
             if echo $device_info | grep -q "Connected: yes"; then
-              printf "%%{F#0957d6} %s%%{F-}\n" "$(get_current_device_name)";
+              printf "%%{F#0957d6}$bluetooth_on_icon %s%%{F-}\n" "$(get_current_device_name)";
             else
-              printf "%%{F#f00} %s%%{F-}\n" "$(get_current_device_name)";
+              printf "%%{F#f00}$bluetooth_on_icon %s%%{F-}\n" "$(get_current_device_name)";
             fi
         else
-            echo ""
+            echo "$bluetooth_off_icon"
         fi    
     else
-        echo ""
+        echo "$bluetooth_off_icon"
     fi
 }
 
@@ -36,12 +47,12 @@ print_all() {
             device_info=$(bluetoothctl info "$device")
             if echo "$device_info" | grep -q "Connected: yes"; then
                 device_alias=$(echo "$device_info" | grep "Alias" | cut -d ' ' -f 2-)
-                printf " %s\n" "$device_alias" 
+                printf "$bluetooth_on_icon %s\n" "$device_alias" 
             fi
         done
 
     else
-        echo ""
+        echo "$bluetooth_off_icon"
     fi
 }
 
