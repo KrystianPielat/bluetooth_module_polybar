@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 counter_file="/tmp/polybar_bluetooth_counter";
 if [ ! -f $counter_file ]; then
     touch "$counter_file";
@@ -104,7 +105,7 @@ toggle_all() {
 
 get_counter() {
     read -r counter < "$counter_file"
-    echo $counter;
+    echo ${counter#-};
 }
 
 
